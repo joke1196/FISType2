@@ -59,27 +59,27 @@ class LinguisticVariableT2:
                                                           FreeShapeMF([self.transitionsMin[0][0][0], self.transitionsMin[0][1][0], self.transitionsMin[0][2][0]],
                                                                       [self.transitionsMin[0][0][1], self.transitionsMin[0][1][1],self.transitionsMin[0][2][1]]))
         for i in np.arange(1, len(self.level_names) - 1):
-            self.membership_functions[self.level_names[i]] = (FreeShapeMF([self.transitionsMax[i][j][0],
-                                                                          self.transitionsMax[i][0][0],
-                                                                          self.transitionsMax[i][0],
-                                                                          self.transitionsMax[i][0]],
-                                                                         [self.transitionsMax[i][1],
-                                                                          self.transitionsMax[i][1],
-                                                                          self.transitionsMax[i][1],
-                                                                          self.transitionsMax[i][1]]),\
-                                                             FreeShapeMF([self.transitionsMin[i][0],
-                                                                          self.transitionsMin[i][0],
-                                                                          self.transitionsMin[i][0],
-                                                                          self.transitionsMin[i][0]],
-                                                                         [self.transitionsMin[i][1],
-                                                                          self.transitionsMin[i][1],
-                                                                          self.transitionsMin[i][1],
-                                                                          self.transitionsMin[i][1]]))
+            self.membership_functions[self.level_names[i]] = (FreeShapeMF([self.transitionsMax[i][0][0],
+                                                                          self.transitionsMax[i][1][0],
+                                                                          self.transitionsMax[i][2][0],
+                                                                          self.transitionsMax[i][3][0]],
+                                                                         [self.transitionsMax[i][0][1],
+                                                                          self.transitionsMax[i][1][1],
+                                                                          self.transitionsMax[i][2][1],
+                                                                          self.transitionsMax[i][3][1]]),\
+                                                             FreeShapeMF([self.transitionsMin[i][0][0],
+                                                                          self.transitionsMin[i][1][0],
+                                                                          self.transitionsMin[i][2][0],
+                                                                          self.transitionsMin[i][3][0]],
+                                                                         [self.transitionsMin[i][0][1],
+                                                                          self.transitionsMin[i][1][1],
+                                                                          self.transitionsMin[i][2][1],
+                                                                          self.transitionsMin[i][3][1]]))
 
-        self.membership_functions[self.level_names[-1]] = (FreeShapeMF([self.transitionsMax[-2][0], self.transitionsMax[-1][0]],
-                                                                      [self.transitionsMax[-2][1], self.transitionsMax[-1][1]]),\
-                                                          FreeShapeMF([self.transitionsMin[-2][0], self.transitionsMin[-1][0]],
-                                                                      [self.transitionsMin[-2][1], self.transitionsMin[-1][1]]))
+        self.membership_functions[self.level_names[-1]] = (FreeShapeMF([self.transitionsMax[-1][0][0], self.transitionsMax[-1][1][0],self.transitionsMax[-1][2][0]],
+                                                                      [self.transitionsMax[-1][0][1], self.transitionsMax[-1][1][1],self.transitionsMax[-1][2][1]]),
+                                                          FreeShapeMF([self.transitionsMin[-1][0][0], self.transitionsMin[-1][1][0], self.transitionsMin[-1][2][0]],
+                                                                      [self.transitionsMin[-1][0][1], self.transitionsMin[-1][1][1], self.transitionsMin[-1][2][1]]))
         # self.membership_functions[self.level_names[0]][0].plot(self.transitionsMax[0:-1][0])
         self.input_value = None
         self.membership_values = dict()
@@ -145,8 +145,6 @@ class FreeShapeMF:
         self.membership_values = membership_values
 
     def __call__(self, value):
-        print self.input_values
-        print self.membership_values
         if value <= self.input_values[0]:
             return self.membership_values[0]
         elif value >= self.input_values[-1]:
@@ -163,6 +161,7 @@ class FreeShapeMF:
 
     def plot(self, input_values, col=None, name=None):
         output_values = self.apply_to(input_values)
+        print output_values
         if col:
             pl.plot(input_values, output_values, c=col, label=name)
         else:
