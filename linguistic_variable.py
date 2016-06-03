@@ -123,6 +123,17 @@ class LinguisticVariableT2:
         pl.grid(True)
         pl.title(self.name)
 
+    def fuzzify(self, value):
+        self.fuzzy_value = value
+        self.membership_values = dict()
+        for name, mf in self.membership_functions.iteritems():
+            self.membership_values[name] =(mf[0](self.fuzzy_value), mf[1](self.fuzzy_value))
+            print (mf[0](self.fuzzy_value), mf[1](self.fuzzy_value))
+        print self.membership_values
+        return self.membership_values
+
+
+
 
 class FreeShapeMF:
     """
@@ -169,5 +180,8 @@ class FreeShapeMF:
             pl.plot(input_values, output_values, label=name)
         pl.ylim(0, 1.05)
         pl.grid(True)
+
+
+
 
 

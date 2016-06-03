@@ -1,5 +1,5 @@
 import linguistic_variable as lv
-import matplotlib as pl
+import matplotlib.pyplot as pl
 import fuzzy_rule_type2 as fr
 
 
@@ -11,8 +11,8 @@ release = lv.LinguisticVariableT2('release', 0, 35, [[[(0,1),(17,1),(20,0)],[(0,
 
 
 temperature.plot()
-# pl.show()
+pl.show()
 
 rule = fr.Fuzzy_RuleT2("AND_min", [(temperature, "cold"), (pressure, "medium")] , (release, "low"), 'MIN')
 
-# rule.compute_antecedent_activation()
+rule.compute_antecedent_activation({'temperature': 19.5, 'pressure': 5})
