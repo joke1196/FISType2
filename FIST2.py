@@ -1,5 +1,7 @@
 
 import numpy as np
+import matplotlib.pyplot as pl
+from matplotlib import cm
 
 class FIS_T2:
 
@@ -68,6 +70,7 @@ class FIS_T2:
         for r in self.rules:
             r.compute_antecedent_activation(input_values)
 
+
     def compute_consequent_activations(self):
         """
         This function computes the activation of the consequent of all rules.
@@ -105,6 +108,7 @@ class FIS_T2:
         for i, r in enumerate(self.rules):
             pl.subplot(1, n_r, i+1)
             r.plot()
+
 
     def plot_output(self):
         pl.plot(self.output_variable.input_values, self.fuzzified_output)
