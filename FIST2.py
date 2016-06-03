@@ -49,7 +49,8 @@ class FIS_T2:
         self.defuzzifier = defuzzifier
 
         self.input_values = dict()
-        self.fuzzified_output = np.zeros(len(self.output_variable.input_values))
+        self.fuzzified_outputMin = np.zeros(len(self.output_variable.input_values))
+        self.fuzzified_outputMax = np.zeros(len(self.output_variable.input_values))
         self.defuzzified_output = 0.0
 
     def __str__(self):
@@ -82,15 +83,17 @@ class FIS_T2:
         """
         This function performs the aggregation of the rules outputs
         """
-        self.fuzzified_output = np.zeros(len(self.output_variable.input_values))
+        self.fuzzified_outputMin = np.zeros(len(self.output_variable.input_values))
+        self.fuzzified_outputMax = np.zeros(len(self.output_variable.input_values))
         for r in self.rules:
-            self.fuzzified_output = self.aggregator(self.fuzzified_output, r.consequent_activation)
+            self.fuzzified_outputMin = self.aggregator(self.fuzzified_outputMin, r.consequent_activationMin)
+            self.fuzzified_outputMax = self.aggregator(self.fuzzified_outputMax, r.consequent_activationMax)
 
     def defuzzify(self):
         """
         This function defuzzifies the fuzzified_output of the system
         """
-        self.defuzzified_output = self.__fuzzy_defuzzifiers[self.defuzzifier](self.output_variable.input_values, self.fuzzified_output)
+        self.defuzzified_output = self.__fuzzy_defuzzifiers[self.defuzzifier](self.output_variable.input_values, self.fuzzified_outputMin, self.fuzzified_outputMax)
         return self.defuzzified_output
 
     def plot_variables(self):
@@ -111,7 +114,8 @@ class FIS_T2:
 
 
     def plot_output(self):
-        pl.plot(self.output_variable.input_values, self.fuzzified_output)
+        pl.plot(self.output_variable.input_values, self.fuzzified_outputMin)
+        pl.plot(self.output_variable.input_values, self.fuzzified_outputMax)
         pl.axvline(self.defuzzified_output, color='black', linestyle='--')
         pl.ylim(0, 1.05)
         pl.grid()

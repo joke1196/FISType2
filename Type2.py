@@ -11,20 +11,22 @@ release = lv.LinguisticVariableT2('release', 0, 35, [[[(0,1),(17,1),(20,0)],[(0,
 
 
 
-temperature.plot()
+# temperature.plot()
 
 
 rule = fr.Fuzzy_RuleT2("AND_min", [(temperature, "cold"), (pressure, "medium")] , (release, "low"), 'MIN')
-rule2 = fr.Fuzzy_RuleT2("AND_min", [(pressure, "high")] , (release, "high"), 'MIN')
-rule3 = fr.Fuzzy_RuleT2("AND_min", [(temperature, "hot"), (pressure, "low")] , (release, "medium"), 'MIN')
+rule2 = fr.Fuzzy_RuleT2("AND_min", [(temperature, "warm"), (pressure, "low")] , (release, "medium"), 'MIN')
+rule3 = fr.Fuzzy_RuleT2("OR_max", [(temperature, "hot"), (pressure, "high")], (release, "high"), 'MIN')
 
-value = {'temperature': 19.5, 'pressure': 5}
+value = {'temperature': 23, 'pressure': 30}
 
 testFIS = fis.FIS_T2([rule, rule2, rule3])
 
 testFIS.compute_antecedent_activations(value)
 testFIS.compute_consequent_activations()
+testFIS.aggregate()
 
-testFIS.plot_rules()
+# testFIS.plot_rules()
+testFIS.plot_output()
 
 pl.show()
