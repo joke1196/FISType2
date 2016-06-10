@@ -23,10 +23,10 @@ class FIS_T2:
     __fuzzy_aggregators = {'OR_max': np.maximum,
                            'OR_probsum': lambda x,y: np.add(x, y) - np.multiply(x, y),
                            'OR_boundsum': lambda x,y: np.minimum(1, np.add(x, y))}
-    __fuzzy_defuzzifiers = {'COA': lambda v,m: np.sum(np.multiply(v,m)) / np.sum(m),
+    __fuzzy_defuzzifiers = {'CENTROID': lambda v,m: np.sum(np.multiply(v,m)) / np.sum(m),
                             'MOM': __mom}
 
-    def __init__(self, rules, aggregator='OR_max', defuzzifier='COA'):
+    def __init__(self, rules, aggregator='OR_max', defuzzifier='CENTROID'):
         """
         Three parameters are needed:
         rules: a list of objects of type FuzzyRule containing the rules of the system
@@ -83,12 +83,56 @@ class FIS_T2:
         for r in self.rules:
             self.fuzzified_output = self.aggregator(self.fuzzified_output, r.consequent_activation)
 
+    # ==========================================================================================
+
     def defuzzify(self):
         """
         This function defuzzifies the fuzzified_output of the system
         """
         self.defuzzified_output = self.__fuzzy_defuzzifiers[self.defuzzifier](self.output_variable.input_values, self.fuzzified_output)
         return self.defuzzified_output
+
+    def Sum(self, y, theta)
+        t1, t2 = 0.0, 0.0
+        for i in range(100):
+            t1 += (y[i] * theta[i])
+            t2 += theta[i]
+        if t2 == 0:
+            return -1
+        return t1 / t2
+
+    def computeCentroid(self, y, upperBond, lowerBond, minMax):
+        y1, y2 = 0.0, 100.0
+        theta, delta, h = np.zeros([100]), np.zeros([100]), np.zeros([100])
+        for i in range(100):
+            theta[i] = h[i] = (upperBond[i] + lowerBond[i]) / 2
+            delta[i] = (upperBond[i] - lowerBond[i]) / 2
+        y1 = Sum(y, h)
+        cn = 0
+        while (abs(y2 - y1) > 0.000000001):
+            cn = cn + 1
+            if cn > 1:
+                y1 = y2
+            e = 0
+            for i in range(100):
+                if y[i] <= y1 and y1 <= y[i + 1]:
+                    e = i
+                    break
+            for i in range(e):
+                if minMax > 0:
+                    theta[i] = h[i] - delta[i]
+                else:
+                    theta[i] = h[i] + delta[i]
+            for i in range(e, 100):
+                if minMax > 0:
+                    theta[i] = h[i] + delta[i]
+                else:
+                    theta[i] = h[i] - delta[i]
+            y2 = Sum(y, theta)
+        return y2
+
+
+    # ==========================================================================================
 
     def plot_variables(self):
         i = 1
