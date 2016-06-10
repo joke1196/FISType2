@@ -41,7 +41,8 @@ class Fuzzy_RuleT2:
         self.consequent = consequent
         self.implication = implication
         self.antecedent_activation = 0.0
-        self.consequent_activation = np.zeros(len(consequent[0].input_values))
+        self.consequent_activationMin = np.zeros(len(consequent[0].input_values))
+        self.consequent_activationMax = np.zeros(len(consequent[0].input_values))
 
 
     def compute_antecedent_activation(self, input_values):
@@ -59,5 +60,34 @@ class Fuzzy_RuleT2:
         if len(temp) == 0:
             self.antecedent_activation = 0.0
         else:
-            self.antecedent_activation = self.__fuzzy_operations[self.operation](temp)
+            print temp
+            temp2 = []
+            for pair in temp:
+                if(pair[0] + pair[1] > 0.0):
+                    temp2.append(pair)
+            if len(temp2) == 0:
+                temp2.append((0,0))
+
+            self.antecedent_activation = self.__fuzzy_operations[self.operation](temp2)
         return self.antecedent_activation
+
+    def compute_consequent_activation(self):
+        """
+        This function applies the causal implication operator in order to compute
+        the activation of the rule's consequent.
+        """
+        self.consequent_activationMax, self.consequent_activationMin = self.consequent[0].get_linguistic_value(self.consequent[1])
+        print self.antecedent_activation
+        self.consequent_activationMin = self.__fuzzy_implication[self.implication](self.antecedent_activation, self.consequent_activationMin)
+        self.consequent_activationMax = self.__fuzzy_implication[self.implication](self.antecedent_activation, self.consequent_activationMax)
+        print self.consequent_activationMin
+        print self.consequent_activationMax
+        return (self.consequent_activationMax , self.consequent_activationMax)
+
+    def plot(self):
+        pl.plot(self.consequent[0].input_values, self.consequent_activationMin, label=self.consequent[1])
+        pl.plot(self.consequent[0].input_values, self.consequent_activationMax, label=self.consequent[1])
+        pl.ylim(0, 1.05)
+        pl.legend()
+        pl.title(self.consequent[0].name)
+        pl.grid()

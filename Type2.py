@@ -1,5 +1,6 @@
 import linguistic_variable as lv
 import matplotlib.pyplot as pl
+import FIST2 as fis
 import fuzzy_rule_type2 as fr
 
 
@@ -11,8 +12,19 @@ release = lv.LinguisticVariableT2('release', 0, 35, [[[(0,1),(17,1),(20,0)],[(0,
 
 
 temperature.plot()
-pl.show()
+
 
 rule = fr.Fuzzy_RuleT2("AND_min", [(temperature, "cold"), (pressure, "medium")] , (release, "low"), 'MIN')
+rule2 = fr.Fuzzy_RuleT2("AND_min", [(pressure, "high")] , (release, "high"), 'MIN')
+rule3 = fr.Fuzzy_RuleT2("AND_min", [(temperature, "hot"), (pressure, "low")] , (release, "medium"), 'MIN')
 
-rule.compute_antecedent_activation({'temperature': 19.5, 'pressure': 5})
+value = {'temperature': 19.5, 'pressure': 5}
+
+testFIS = fis.FIS_T2([rule, rule2, rule3])
+
+testFIS.compute_antecedent_activations(value)
+testFIS.compute_consequent_activations()
+
+testFIS.plot_rules()
+
+pl.show()

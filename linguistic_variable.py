@@ -111,6 +111,11 @@ class LinguisticVariableT2:
             level_names = [level_names[0] + str(i) for i in np.arange((len(self.transitions) / 2) + 1)]
 #        assert len(level_names) == (len(self.transitions) / 2) + 1
         self.level_names = level_names
+
+    def get_linguistic_value(self, name):
+        assert name in self.level_names
+        return (self.membership_functions[name][0].apply_to(self.input_values), self.membership_functions[name][1].apply_to(self.input_values))
+
     def plot(self):
         for name, mf in self.membership_functions.iteritems():
             mf[0].plot(self.input_values, name=name)
@@ -128,8 +133,7 @@ class LinguisticVariableT2:
         self.membership_values = dict()
         for name, mf in self.membership_functions.iteritems():
             self.membership_values[name] =(mf[0](self.fuzzy_value), mf[1](self.fuzzy_value))
-            print (mf[0](self.fuzzy_value), mf[1](self.fuzzy_value))
-        print self.membership_values
+        print self.membership_values # TODO Remove
         return self.membership_values
 
 
