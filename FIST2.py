@@ -3,6 +3,8 @@ import numpy as np
 import matplotlib.pyplot as pl
 from matplotlib import cm
 
+from Defuzzifiers import centroid
+
 class FIS_T2:
 
     """
@@ -25,10 +27,9 @@ class FIS_T2:
     __fuzzy_aggregators = {'OR_max': np.maximum,
                            'OR_probsum': lambda x,y: np.add(x, y) - np.multiply(x, y),
                            'OR_boundsum': lambda x,y: np.minimum(1, np.add(x, y))}
-    __fuzzy_defuzzifiers = {'COA': lambda v,m: np.sum(np.multiply(v,m)) / np.sum(m),
-                            'MOM': __mom}
+    __fuzzy_defuzzifiers = {'CENTROID': centroid}
 
-    def __init__(self, rules, aggregator='OR_max', defuzzifier='COA'):
+    def __init__(self, rules, aggregator='OR_max', defuzzifier='CENTROID'):
         """
         Three parameters are needed:
         rules: a list of objects of type FuzzyRule containing the rules of the system

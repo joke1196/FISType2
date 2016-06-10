@@ -91,3 +91,4 @@ class Fuzzy_RuleT2:
         pl.legend()
         pl.title(self.consequent[0].name)
         pl.grid()
+

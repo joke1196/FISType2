@@ -5,21 +5,21 @@ import matplotlib.pyplot as pl
 
 class LinguisticVariableT2:
     """
-    This class implements a linguistic variable with some constraints
+    This class implements a linguistic variable of type 2 with some constraints
     in the definition in its membership functions.
-    Linguistic values are shaped as trapezoidal membership functions,
-    each membership function is defined by a a series of 2 or 4 points:
+    Linguistic values are shaped as two trapezoidal membership functions,
+    each membership function is defined by a a series of 3 or 4 points:
     
-    1 _____p[0].  _ _ _ _ _ _      1 _ _ _  p[1].________.p[2] _ _ _ _temperature.fuzzify(19)
+    1p[0] _____p[1].  _ _ _ _ _ _      1 _ _ _  p[1].________.p[2] _ _ _ _
                 \\                              /          \\
                  \\                            /            \\
                   \\                          /              \\
                    \\                        /                \\
     0 _ _ _ _ _ _ _ \\._______      0 _____./_ _ _ _ _ _ _ _ _ \\.______
-                      p[1]                  p[0]                   p[3]
+                      p[2]                  p[0]                   p[3]
     
     Therefore, linguistic values are defined at initialization by specifying
-    their transition points:
+    their transition points and their values a this transition:
     
     1 _______   t[1]_______   t[3]__   t[5]______ . . .
              \\   /         \\   /    \\   / 
@@ -28,7 +28,13 @@ class LinguisticVariableT2:
               / \\           / \\      / \\
     0 _______/   \\_________/   \\____/   \\________ . . .
            t[0]          t[2]     t[4]
-    
+
+        Each membership function possesses a upper bond and a lower bond. So in order to create a correct
+         linguistic variable the parameter transition should be passed as follows:
+             transitions is an array of multiple membership functions: [membershipFunction1, membershipFunction2, membershipFunction3 ...]
+                a membership function is an array of two arrays of transition: [arrayOfTransitionsUpperBond, arrayOfTransitionLowerBond]
+                    a transition is a tuple with x and its value y: (x,y)
+
     """
     def __init__(self, name, x_min, x_max, transitions, level_names=None, res=0.1):
         """
@@ -80,15 +86,13 @@ class LinguisticVariableT2:
                                                                       [self.transitionsMax[-1][0][1], self.transitionsMax[-1][1][1],self.transitionsMax[-1][2][1]]),
                                                           FreeShapeMF([self.transitionsMin[-1][0][0], self.transitionsMin[-1][1][0], self.transitionsMin[-1][2][0]],
                                                                       [self.transitionsMin[-1][0][1], self.transitionsMin[-1][1][1], self.transitionsMin[-1][2][1]]))
-        # self.membership_functions[self.level_names[0]][0].plot(self.transitionsMax[0:-1][0])
         self.input_value = None
         self.membership_values = dict()
 
     def __assert_transitions(self, transistions):
         for mf in np.arange(0, len(transistions)):
             n_transitions = len(transistions[mf])
-            assert n_transitions >= 2
-#            assert n_transitions % 2 == 0
+            assert n_transitions >= 3
             assert self.x_min <= transistions[mf][0][0]
             assert transistions[mf][-1][0] <= self.x_max
             for i in np.arange(1, n_transitions):
