@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as pl
 from matplotlib import cm
 
+
 class FIS_T2:
 
     """
@@ -70,7 +71,6 @@ class FIS_T2:
         for r in self.rules:
             r.compute_antecedent_activation(input_values)
 
-
     def compute_consequent_activations(self):
         """
         This function computes the activation of the consequent of all rules.
@@ -95,7 +95,8 @@ class FIS_T2:
         self.defuzzified_output = self.__fuzzy_defuzzifiers[self.defuzzifier](self.output_variable.input_values, self.fuzzified_output)
         return self.defuzzified_output
 
-    def Sum(self, y, theta)
+    @staticmethod
+    def sum(y, theta):
         t1, t2 = 0.0, 0.0
         for i in range(100):
             t1 += (y[i] * theta[i])
@@ -104,21 +105,21 @@ class FIS_T2:
             return -1
         return t1 / t2
 
-    def computeCentroid(self, y, upperBond, lowerBond, minMax):
+    def compute_centroid(self, y, upperBond, lowerBond, minMax):
         y1, y2 = 0.0, 100.0
         theta, delta, h = np.zeros([100]), np.zeros([100]), np.zeros([100])
         for i in range(100):
             theta[i] = h[i] = (upperBond[i] + lowerBond[i]) / 2
             delta[i] = (upperBond[i] - lowerBond[i]) / 2
-        y1 = Sum(y, h)
+        y1 = self.sum(y, h)
         cn = 0
-        while (abs(y2 - y1) > 0.000000001):
-            cn = cn + 1
+        while abs(y2 - y1) > 0.000000001:
+            cn += 1
             if cn > 1:
                 y1 = y2
             e = 0
             for i in range(100):
-                if y[i] <= y1 and y1 <= y[i + 1]:
+                if y[i] <= y1 <= y[i + 1]:
                     e = i
                     break
             for i in range(e):
@@ -131,7 +132,7 @@ class FIS_T2:
                     theta[i] = h[i] + delta[i]
                 else:
                     theta[i] = h[i] - delta[i]
-            y2 = Sum(y, theta)
+            y2 = self.sum(y, theta)
         return y2
 
 
@@ -152,7 +153,6 @@ class FIS_T2:
         for i, r in enumerate(self.rules):
             pl.subplot(1, n_r, i+1)
             r.plot()
-
 
     def plot_output(self):
         pl.plot(self.output_variable.input_values, self.fuzzified_output)
