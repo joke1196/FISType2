@@ -4,6 +4,8 @@ import matplotlib.pyplot as pl
 from matplotlib import cm
 
 
+from Defuzzifiers import centroid
+
 class FIS_T2:
 
     """
@@ -26,8 +28,8 @@ class FIS_T2:
     __fuzzy_aggregators = {'OR_max': np.maximum,
                            'OR_probsum': lambda x,y: np.add(x, y) - np.multiply(x, y),
                            'OR_boundsum': lambda x,y: np.minimum(1, np.add(x, y))}
-    __fuzzy_defuzzifiers = {'CENTROID': lambda v,m: np.sum(np.multiply(v,m)) / np.sum(m),
-                            'MOM': __mom}
+
+    __fuzzy_defuzzifiers = {'CENTROID': centroid}
 
     def __init__(self, rules, aggregator='OR_max', defuzzifier='CENTROID'):
         """
@@ -50,7 +52,8 @@ class FIS_T2:
         self.defuzzifier = defuzzifier
 
         self.input_values = dict()
-        self.fuzzified_output = np.zeros(len(self.output_variable.input_values))
+        self.fuzzified_outputMin = np.zeros(len(self.output_variable.input_values))
+        self.fuzzified_outputMax = np.zeros(len(self.output_variable.input_values))
         self.defuzzified_output = 0.0
 
     def __str__(self):
@@ -82,9 +85,11 @@ class FIS_T2:
         """
         This function performs the aggregation of the rules outputs
         """
-        self.fuzzified_output = np.zeros(len(self.output_variable.input_values))
+        self.fuzzified_outputMin = np.zeros(len(self.output_variable.input_values))
+        self.fuzzified_outputMax = np.zeros(len(self.output_variable.input_values))
         for r in self.rules:
-            self.fuzzified_output = self.aggregator(self.fuzzified_output, r.consequent_activation)
+            self.fuzzified_outputMin = self.aggregator(self.fuzzified_outputMin, r.consequent_activationMin)
+            self.fuzzified_outputMax = self.aggregator(self.fuzzified_outputMax, r.consequent_activationMax)
 
     # ==========================================================================================
 
@@ -92,7 +97,7 @@ class FIS_T2:
         """
         This function defuzzifies the fuzzified_output of the system
         """
-        self.defuzzified_output = self.__fuzzy_defuzzifiers[self.defuzzifier](self.output_variable.input_values, self.fuzzified_output)
+        self.defuzzified_output = self.__fuzzy_defuzzifiers[self.defuzzifier](self.output_variable.input_values, self.fuzzified_outputMin, self.fuzzified_outputMax)
         return self.defuzzified_output
 
     @staticmethod
@@ -135,7 +140,6 @@ class FIS_T2:
             y2 = self.sum(y, theta)
         return y2
 
-
     # ==========================================================================================
 
     def plot_variables(self):
@@ -155,7 +159,8 @@ class FIS_T2:
             r.plot()
 
     def plot_output(self):
-        pl.plot(self.output_variable.input_values, self.fuzzified_output)
+        pl.plot(self.output_variable.input_values, self.fuzzified_outputMin)
+        pl.plot(self.output_variable.input_values, self.fuzzified_outputMax)
         pl.axvline(self.defuzzified_output, color='black', linestyle='--')
         pl.ylim(0, 1.05)
         pl.grid()

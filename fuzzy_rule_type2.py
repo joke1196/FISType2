@@ -82,7 +82,7 @@ class Fuzzy_RuleT2:
         self.consequent_activationMax = self.__fuzzy_implication[self.implication](self.antecedent_activation, self.consequent_activationMax)
         print self.consequent_activationMin
         print self.consequent_activationMax
-        return (self.consequent_activationMax , self.consequent_activationMax)
+        return (self.consequent_activationMax , self.consequent_activationMin)
 
     def plot(self):
         pl.plot(self.consequent[0].input_values, self.consequent_activationMin, label=self.consequent[1])
@@ -91,3 +91,4 @@ class Fuzzy_RuleT2:
         pl.legend()
         pl.title(self.consequent[0].name)
         pl.grid()
+
