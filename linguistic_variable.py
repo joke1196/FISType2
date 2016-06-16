@@ -188,8 +188,3 @@ class FreeShapeMF:
             pl.plot(input_values, output_values, label=name)
         pl.ylim(0, 1.05)
         pl.grid(True)
-
-
-
-
-

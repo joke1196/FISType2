@@ -29,4 +29,7 @@ testFIS.aggregate()
 # testFIS.plot_rules()
 testFIS.plot_output()
 
+# retourne tuple (cl, cr) qui sont les bornes inferieures et superieures de l'intervalle de la centroid
+testFIS.defuzzify()
+
 pl.show()
