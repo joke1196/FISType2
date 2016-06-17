@@ -21,8 +21,9 @@ class FIS_T2:
 
     def __centroid(self):
         cen = centroid(self.output_variable.input_values, self.fuzzified_outputMin, self.fuzzified_outputMax)
-        return cen(0), cen(1)
-
+        # Calcule les deux bornes de la centroide (reduction de type)
+        # et retourne le centre de l'intervalle (deffuzification)
+        return (cen(0) + cen(1))/2
 
     __fuzzy_aggregators = {'OR_max': np.maximum,
                            'OR_probsum': lambda x,y: np.add(x, y) - np.multiply(x, y),
